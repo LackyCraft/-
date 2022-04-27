@@ -1,0 +1,137 @@
+﻿<Window x:Class="Черновик.DraftMainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Черновик"
+        mc:Ignorable="d"
+        Title="Черновик" Height="450" Width="890"
+        MinHeight="450" MinWidth="890"
+        MaxHeight="2000" MaxWidth="2000"
+        Icon="/icon/Черновик.png">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Image Source="/icon/Черновик.png" HorizontalAlignment="Center" VerticalAlignment="Center" Height="90" Grid.Column="0" />
+
+            <TextBlock Text="Главное меню" Grid.Column="1" FontFamily="Segoe Print" FontWeight="Bold" FontSize="36" Margin="15,0,0,0"/>
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Height="30" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,19,-9,0">
+                <Button Click="clickButtonAddNewMaterial" HorizontalAlignment="Right"  Margin="0,0,15,0"  Width="150" Content="Добавить" Background="{StaticResource orange}" Foreground="{StaticResource main}" Height="30" VerticalAlignment="Center" FontFamily="Segoe Print" FontWeight="Bold"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+
+                <TextBlock VerticalAlignment="Center" Text="Поиск: " FontFamily="Segoe Print"/>
+                <TextBox TextChanged="textChangedTextBoxSearch" x:Name="TextBoxSearch" Margin="5,0,0,0" Width="100" TextAlignment="Center" FontFamily="Segoe Print"/>
+
+                <TextBlock Margin="5,0,0,0"  VerticalAlignment="Center" Text="Сортировка: " FontFamily="Segoe Print"/>
+                <ComboBox x:Name="ComboBoxSort" Margin="5,0,0,0" Width="155" FontFamily="Segoe Print" SelectionChanged="selectionChangedComboBox"/>
+
+                <TextBlock Margin="5,0,0,0"  VerticalAlignment="Center"  Text="Фильтрация: " FontFamily="Segoe Print"/>
+                <ComboBox x:Name="ComboBoxFilter" Margin="5,0,0,0" Width="90" DisplayMemberPath="Title" SelectedValuePath="ID" SelectionChanged="selectionChangedComboBox"  FontFamily="Segoe Print"/>
+
+                <Button Click="clickButtonClear" Content="Сбросить фильтры" Width="150"  Margin="15,0,5,0" FontFamily="Segoe Print" FontSize="11" BorderBrush="{StaticResource orange}" />
+
+
+
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <TextBox x:Name="TextBoxStatusLine" TextAlignment="Center" FontFamily="Segoe Print" Margin="0,5,5,0"/>
+        </Grid>
+
+        <DataGrid
+            SelectionChanged="selectionChangedDataGridMaterialList"
+            FontFamily="Segoe Print" x:Name="DataGridMaterialList" HeadersVisibility="None" AutoGenerateColumns="False" Grid.Row="2" Margin="5" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.ColumnSpan="2">
+            
+            <!-- Для реализацции выделения цвета -->
+            <DataGrid.CellStyle>
+                <Style TargetType="{x:Type DataGridCell}">
+                    <Style.Triggers>
+
+                        <!-- Если количество материала меньше, чем указанное минимальное количество -->
+                        <DataTrigger Binding="{Binding NormCountInStock}" Value="False">
+                            <Setter Property="Foreground" Value="{StaticResource pink}"/>
+                        </DataTrigger>
+                        
+                        <!-- В случае если текущее количество составляет 300% от минимального количества -->
+                        <DataTrigger Binding="{Binding BigCountInStock}" Value="True">
+                            <Setter Property="Foreground" Value="{StaticResource orange}"/>
+                        </DataTrigger>
+
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.CellStyle>
+
+            <!-- Для реализацции выделения цвета -->
+
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Width="100" Header="Logo">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding Image}" Height="90" Width="90" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                <DataGridTextColumn IsReadOnly="True" Width="*" Header="Описание">
+                    <DataGridTextColumn.Binding>
+                        <MultiBinding StringFormat="{}{0} | {1}&#x0a;Минимальное количество: {2} шт &#x0a;Поставщики {3}">
+                            <Binding Path="MaterialType"/>
+                            <Binding Path="Title" />
+                            <Binding Path="MinCount"/>
+                            <Binding Path="Supplier"/>
+                        </MultiBinding>
+                    </DataGridTextColumn.Binding>
+                </DataGridTextColumn>
+
+                <DataGridTextColumn IsReadOnly="True" Width="150" Header="Остаток" Binding="{Binding CountInStock, StringFormat={} Остаток: {0} шт}"/>
+
+            </DataGrid.Columns>
+        </DataGrid>
+
+
+        <Grid Grid.Row="3" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="180"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Изменить минимальное количество на:" FontFamily="Segoe Print" VerticalAlignment="Center"/>
+                    <TextBox TextChanged="textChangedTextBoxEditMinCount" IsEnabled="False" Margin="15,0,0,0" Text="1" x:Name="TextBoxEditMinCount" Width="60" Height="30" VerticalAlignment="Center" TextAlignment="Center" FontFamily="Segoe Print" FontSize="16"/>
+                    <Button IsEnabled="False" Margin="15,0,0,0" Background="{StaticResource pink}" Foreground="{StaticResource main}"  Click="clickButtonEditMinCount" x:Name="ButtonEditMinCount" Width="100" Content="OK" Height="30" VerticalAlignment="Center" FontFamily="Segoe Print" FontWeight="Bold"/>
+                </StackPanel>
+
+                <Button HorizontalAlignment="Right"  Margin="0,0,15,0"  Width="150" Content="Редактировать" Background="{StaticResource orange}" Foreground="{StaticResource main}" Height="30" VerticalAlignment="Center" FontFamily="Segoe Print" FontWeight="Bold"/>
+
+            </Grid>
+
+            <Grid Grid.Column="1">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Click="clickButtonPage" x:Name="ButtonBackPage" Content="←" Width="30" Height="30" FontFamily="Segoe Print"/>
+                    <TextBox IsEnabled="False" x:Name="TextBoxPageNumber" Text="1" Height="30" FontSize="20" FontWeight="Bold" FontFamily="Segoe Print" TextAlignment="Center" VerticalAlignment="Center" BorderBrush="{x:Null}"/>
+                    <TextBox IsEnabled="False" Text="/" Height="30" FontSize="20" FontWeight="Bold" FontFamily="Segoe Print" TextAlignment="Center" VerticalAlignment="Center" BorderBrush="{x:Null}"/>
+                    <TextBox IsEnabled="False" x:Name="TextBoxCountPage" Text="11" Height="30" FontSize="20" FontWeight="Bold" FontFamily="Segoe Print" TextAlignment="Center" VerticalAlignment="Center" BorderBrush="{x:Null}"/>
+                    <Button Click="clickButtonPage" x:Name="ButtonNextPage"  Content="→" Width="30" Height="30" FontFamily="Segoe Print"/>
+                </StackPanel>
+            </Grid>
+
+        </Grid>
+
+    </Grid>
+</Window>
