@@ -63,6 +63,11 @@ namespace Черновик
         {
             string MessageError = "";
 
+            if(TextBoxNameMaterial.Text.Length < 2)
+            {
+                MessageError += "Выберите наименование!";
+            }
+
             int checkCount;
             if (!int.TryParse(TextBoxCountInPack.Text, out checkCount))
             {
@@ -94,7 +99,7 @@ namespace Черновик
             }
             if (TextBoxFotoName.Text == "Выберите фотографию")
             {
-                MessageError += "\n Выберите фотографию или оставьте фото по умолчанию";
+                TextBoxFotoName.Text = "/materials/picture.png";
             }
             if (MessageError.Length > 2)
             {
@@ -124,23 +129,33 @@ namespace Черновик
                             //DataBase. newMaterials = new DataBase.Material();
                             newMaterials.Supplier.Add(DataGridSuppliersList.Items[i] as DataBase.Supplier);
                         }
-                        DataBase.DraftDataBaseEntity.GetContext().SaveChanges();
-                        MessageBox.Show("Запись была успешно добавлена в БД");
-                        this.Close();
                     }
+                    DataBase.DraftDataBaseEntity.GetContext().SaveChanges();
+                    MessageBox.Show("Запись была успешно добавлена в БД");
+                    this.Close();
+
+                    //Обновляем в главном меню Лист, в котором содержиться копия материалов из БД
+                    (this.Owner as DraftMainWindow).updateAllMaterialList();
+
                 }
                 catch
                 {
                     MessageBox.Show("Произошла непредвиденная ошибка");
-                    
                 }
+            }
+        }
 
-
-    }
-
-
-
-
+        private void changedTextBoxMinCount(object sender, TextChangedEventArgs e)
+        {
+            int minCount, price;
+            if (int.TryParse(TextBoxMinCount.Text,out minCount) && int.TryParse(TextBoxCoast.Text, out price))
+            {
+                InfoPriceMinCount.Text = "Минимально партия будет обходится в: " + minCount*price + " целковых";
+            }
+            else
+            {
+                InfoPriceMinCount.Text = "";
+            }
         }
     }
 }

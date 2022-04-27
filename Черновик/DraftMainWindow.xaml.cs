@@ -18,7 +18,7 @@ namespace Черновик
     public partial class DraftMainWindow : Window
     {
         //ЛИСТ (копия) БД - будет хранится в памяти
-        private List<DataBase.MaterialList> AllMaterialList;
+        public List<DataBase.MaterialList> AllMaterialList;
 
         //Лист, который будет для сортировки датагрида в реальном времени
         private List<DataBase.MaterialList> gridMaterialList;
@@ -30,20 +30,33 @@ namespace Черновик
         {
             InitializeComponent();
 
-            //заполняем комбобок фильтрации типами материалов
-            ComboBoxFilter.ItemsSource = DataBase.DraftDataBaseEntity.GetContext().MaterialType.ToList();
+            try
+            {
+                //заполняем комбобок фильтрации типами материалов
+                ComboBoxFilter.ItemsSource = DataBase.DraftDataBaseEntity.GetContext().MaterialType.ToList();
 
-            //заполняем комбобок сортировки типами для сортировки
-            List<string> sortList = new List<string>() { "Нимаенование", "Остаток на складе", "Стоимость"};
-            ComboBoxSort.ItemsSource = sortList;
+                //заполняем комбобок сортировки типами для сортировки
+                List<string> sortList = new List<string>() { "Нимаенование", "Остаток на складе", "Стоимость" };
+                ComboBoxSort.ItemsSource = sortList;
 
-            //заполняем листы, пока что полными слепками БД
-            AllMaterialList = DataBase.DraftDataBaseEntity.GetContext().MaterialList.ToList();
+                //заполняем листы, пока что полными слепками БД
+                AllMaterialList = DataBase.DraftDataBaseEntity.GetContext().MaterialList.ToList();
 
-            ComboBoxFilter.SelectedIndex = 0;
+                ComboBoxFilter.SelectedIndex = 0;
+            }
+            catch
+            {
+                MessageBox.Show("Warning x0\nПроизошла непредвиденная ошибка\nПотеряно соединение с базой данных");
+            }
 
         }
 
+        //Функция обновляет лист, который является эталонной копией БД. Вызывается исключительно в дочерних страницах
+        public void updateAllMaterialList()
+        {
+            AllMaterialList = DataBase.DraftDataBaseEntity.GetContext().MaterialList.ToList();
+            drawDataGrid();
+        }
 
         //Функция для перестройки dataGrid в реальном времени
         public void drawDataGrid()
@@ -86,9 +99,9 @@ namespace Черновик
             DataGridMaterialList.CanUserAddRows = false;
         }
 
+        //Изменение состояний комбобоксов вызывает обновление dataGrid
         private void selectionChangedComboBox(object sender, SelectionChangedEventArgs e)
         {
-            //Если менялись фильтры, скидываем пользователя на первую страницу
             TextBoxPageNumber.Text = "1";
             drawDataGrid();
         }
@@ -142,7 +155,7 @@ namespace Черновик
                 }
                 catch
                 {
-                    MessageBox.Show("Warning x0\nПроизошла непредвиденная ошибка");
+                    MessageBox.Show("Warning x0\nПроизошла непредвиденная ошибка\nПотеряно соединение с базой данных");
                 }
             }
             else
@@ -172,7 +185,7 @@ namespace Черновик
                 }
                 catch
                 {
-                    MessageBox.Show("Warning x0\nПроизошла непредвиденная ошибка");
+                    MessageBox.Show("Warning x0\nПроизошла непредвиденная ошибка\nПотеряно соединение с базой данных");
                 }
             }
         }
@@ -191,8 +204,24 @@ namespace Черновик
         //Добавление нового метариала
         private void clickButtonAddNewMaterial(object sender, RoutedEventArgs e)
         {
-            (new AddNewMaterialWindow()).Show();
-            drawDataGrid();
+            AddNewMaterialWindow ownedWindow = new AddNewMaterialWindow();
+            ownedWindow.Owner = this;
+            ownedWindow.Show();
+        }
+
+        //Редактирование выделенного материала
+        private void clickButtonEditNewMaterial(object sender, RoutedEventArgs e)
+        {
+            if (DataGridMaterialList.SelectedItems.Count > 0)
+            {
+                EditMaterialWindows ownedWindow = new EditMaterialWindows(DataGridMaterialList.SelectedItems[0] as DataBase.MaterialList);
+                ownedWindow.Owner = this;
+                ownedWindow.Show();
+            }
+            else
+            {
+                MessageBox.Show("Не выбран материал, для редактирования!\nВыберите необходимый материал и нажмите кнопку редактировать");
+            }
         }
     }
 }
