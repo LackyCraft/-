@@ -26,7 +26,7 @@
             <TextBlock Text="Редактирование материала" Grid.Column="1" FontFamily="Segoe Print" FontWeight="Bold" FontSize="36" Margin="15,0,0,0"/>
 
             <StackPanel Grid.Column="1" Orientation="Horizontal" Height="30" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,19,-9,0">
-                <Button Click="clickAddNewMaterial" HorizontalAlignment="Right"  Margin="0,0,15,0" Content="Сохранить изменения" Background="{StaticResource orange}" Foreground="{StaticResource main}" Height="30" VerticalAlignment="Center" FontFamily="Segoe Print" FontWeight="Bold"/>
+                <Button Click="clickAddNewMaterial" HorizontalAlignment="Right"  Margin="0,0,15,0" Content="Сохранить изменения" Background="{StaticResource orange}" Foreground="{StaticResource main}" Height="30" VerticalAlignment="Center" FontFamily="Segoe Print" FontWeight="Bold" Width="210"/>
             </StackPanel>
 
         </Grid>
@@ -114,6 +114,8 @@
                     <ComboBox x:Name="ComboBoxSupplier" Width="110" DisplayMemberPath="Title" SelectedValuePath="ID"/>
                     <Button Click="cLickButtonAddSupplier"  Content="Добавить поставщика" FontFamily="Segoe Print" Background="{StaticResource pink}" Foreground="{StaticResource main}" FontWeight="Bold"/>
                 </StackPanel>
+
+                <Button Click="clickButtonDeleted" Content="Удалить материал" Margin="0,15,0,0" FontFamily="Segoe Print" Background="Red" Foreground="{StaticResource main}" FontWeight="Bold"/>
 
             </StackPanel>
         </Grid>

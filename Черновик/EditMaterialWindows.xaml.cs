@@ -46,7 +46,9 @@ namespace Черновик
 
             MaterialEditId = editItemMaterial.ID;
 
-            DataGridSuppliersList.Items.Add(DataBase.DraftDataBaseEntity.GetContext().Material.Find(MaterialEditId).Supplier);
+            foreach (DataBase.Supplier items in DataBase.DraftDataBaseEntity.GetContext().Material.Find(MaterialEditId).Supplier.ToList()) {
+                DataGridSuppliersList.Items.Add(items);
+            }
         }
 
         private void selectedFoto(object sender, RoutedEventArgs e)
@@ -140,7 +142,6 @@ namespace Черновик
                     if (DataGridSuppliersList.Items.Count > 0)
                     {
                         DataBase.DraftDataBaseEntity.GetContext().Material.Find(MaterialEditId).Supplier = DataGridSuppliersList.ItemsSource as List<DataBase.Supplier>;
-                        //List < DataBase.Supplier > = new List<DataBase.Supplier>();
                     }
                     else
                     {
@@ -158,7 +159,7 @@ namespace Черновик
                 }
                 catch
                 {
-                    MessageBox.Show("Произошла непредвиденная ошибка");
+                    MessageBox.Show("Warning x0\nПроизошла непредвиденная ошибка\nПотеряно соединение с базой данных");
                 }
             }
         }
@@ -181,6 +182,24 @@ namespace Черновик
             }
         }
 
-
+        private void clickButtonDeleted(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show("Вы правда хотите удалить данный материал?", "Удаление", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    DataBase.DraftDataBaseEntity.GetContext().Material.Remove(DataBase.DraftDataBaseEntity.GetContext().Material.Find(MaterialEditId));
+                    DataBase.DraftDataBaseEntity.GetContext().SaveChanges();
+                    MessageBox.Show("Запись была успешно удалена в БД");
+                    this.Close();
+                    //Обновляем в главном меню Лист, в котором содержиться копия материалов из БД
+                    (this.Owner as DraftMainWindow).updateAllMaterialList();
+                }
+                catch
+                {
+                    MessageBox.Show("Warning x0\nПроизошла непредвиденная ошибка\nПотеряно соединение с базой данных");
+                }
+            }
+        }
     }
 }
