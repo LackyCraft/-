@@ -25,7 +25,8 @@
   <br>
 1.6 ✅
   <br>
-
+<details>
+ 
 # Скриншоты готового решения для компании «Черновик»
 ## Главное меню
 ![image](https://user-images.githubusercontent.com/20025263/165712786-6ac5d96c-ca38-49e0-a6fe-d16e02a2af8f.png)
