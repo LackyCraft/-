@@ -113,7 +113,7 @@
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <ComboBox x:Name="ComboBoxSupplier" Width="110" DisplayMemberPath="Title" SelectedValuePath="ID"/>
-                    <Button Click="cLickButtonAddSupplier"  Content="Добавить поставщика" FontFamily="Segoe Print" Background="{StaticResource pink}" Foreground="{StaticResource main}" FontWeight="Bold"/>
+                    <Button Click="cLickButtonAddSupplier" Content="Добавить поставщика" FontFamily="Segoe Print" Background="{StaticResource pink}" Foreground="{StaticResource main}" FontWeight="Bold"/>
                 </StackPanel>
 
             </StackPanel>

@@ -19,6 +19,9 @@ namespace Черновик
 {
     public partial class EditMaterialWindows : Window
     {
+
+        private int MaterialEditId;
+
         public EditMaterialWindows(DataBase.MaterialList editItemMaterial)
         {
             InitializeComponent();
@@ -40,9 +43,10 @@ namespace Черновик
 
             ComboBoxMaterialType.SelectedValue = editItemMaterial.MaterialTypeID;
             ComboBoxUnit.SelectedItem = editItemMaterial.Unit;
-     
-            
 
+            MaterialEditId = editItemMaterial.ID;
+
+            DataGridSuppliersList.Items.Add(DataBase.DraftDataBaseEntity.GetContext().Material.Find(MaterialEditId).Supplier);
         }
 
         private void selectedFoto(object sender, RoutedEventArgs e)
@@ -63,7 +67,10 @@ namespace Черновик
 
         private void cLickButtonAddSupplier(object sender, RoutedEventArgs e)
         {
-            DataGridSuppliersList.Items.Add(ComboBoxSupplier.SelectedItem as DataBase.Supplier);
+            if (ComboBoxSupplier.SelectedIndex != -1)
+                DataGridSuppliersList.Items.Add(ComboBoxSupplier.SelectedItem as DataBase.Supplier);
+            else
+                MessageBox.Show("Необходимо выбрать возможного поставщика из выпадающего списка.");
         }
 
         private void DeletedAt(object sender, RoutedEventArgs e)
@@ -120,27 +127,27 @@ namespace Черновик
             {
                 try
                 {
-                    DataBase.Material newMaterials = new DataBase.Material();
-                    newMaterials.Title = TextBoxNameMaterial.Text;
-                    newMaterials.CountInPack = int.Parse(TextBoxCountInPack.Text);
-                    newMaterials.Unit = ComboBoxUnit.SelectedValue.ToString();
-                    newMaterials.CountInStock = int.Parse(TextBoxCountInStock.Text);
-                    newMaterials.MinCount = int.Parse(TextBoxMinCount.Text);
-                    newMaterials.Description = TextBoxDesc.Text;
-                    newMaterials.Cost = int.Parse(TextBoxCoast.Text);
-                    newMaterials.Image = TextBoxFotoName.Text;
-                    newMaterials.MaterialTypeID = int.Parse(ComboBoxMaterialType.SelectedValue.ToString());
-                    DataBase.DraftDataBaseEntity.GetContext().Material.Add(newMaterials);
-                    DataBase.DraftDataBaseEntity.GetContext().SaveChanges();
+                    DataBase.DraftDataBaseEntity.GetContext().Material.Find(MaterialEditId).Title = TextBoxNameMaterial.Text;
+                    DataBase.DraftDataBaseEntity.GetContext().Material.Find(MaterialEditId).CountInPack = int.Parse(TextBoxCountInPack.Text);
+                    DataBase.DraftDataBaseEntity.GetContext().Material.Find(MaterialEditId).Unit = ComboBoxUnit.SelectedValue.ToString();
+                    DataBase.DraftDataBaseEntity.GetContext().Material.Find(MaterialEditId).CountInStock = int.Parse(TextBoxCountInStock.Text);
+                    DataBase.DraftDataBaseEntity.GetContext().Material.Find(MaterialEditId).MinCount = int.Parse(TextBoxMinCount.Text);
+                    DataBase.DraftDataBaseEntity.GetContext().Material.Find(MaterialEditId).Description = TextBoxDesc.Text;
+                    DataBase.DraftDataBaseEntity.GetContext().Material.Find(MaterialEditId).Cost = int.Parse(TextBoxCoast.Text);
+                    DataBase.DraftDataBaseEntity.GetContext().Material.Find(MaterialEditId).Image = TextBoxFotoName.Text;
+                    DataBase.DraftDataBaseEntity.GetContext().Material.Find(MaterialEditId).MaterialTypeID = int.Parse(ComboBoxMaterialType.SelectedValue.ToString());
 
                     if (DataGridSuppliersList.Items.Count > 0)
                     {
-                        for (int i = 0; i < DataGridSuppliersList.Items.Count; i++)
-                        {
-                            //DataBase. newMaterials = new DataBase.Material();
-                            newMaterials.Supplier.Add(DataGridSuppliersList.Items[i] as DataBase.Supplier);
-                        }
+                        DataBase.DraftDataBaseEntity.GetContext().Material.Find(MaterialEditId).Supplier = DataGridSuppliersList.ItemsSource as List<DataBase.Supplier>;
+                        //List < DataBase.Supplier > = new List<DataBase.Supplier>();
                     }
+                    else
+                    {
+                        DataBase.DraftDataBaseEntity.GetContext().Material.Find(MaterialEditId).Supplier = null;
+                    }
+                    
+  
                     DataBase.DraftDataBaseEntity.GetContext().SaveChanges();
                     MessageBox.Show("Запись была успешно добавлена в БД");
                     this.Close();

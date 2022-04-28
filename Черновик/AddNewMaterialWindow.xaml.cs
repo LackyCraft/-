@@ -51,7 +51,10 @@ namespace Черновик
 
         private void cLickButtonAddSupplier(object sender, RoutedEventArgs e)
         {
-            DataGridSuppliersList.Items.Add(ComboBoxSupplier.SelectedItem as DataBase.Supplier);
+            if (ComboBoxSupplier.SelectedIndex != -1)
+                DataGridSuppliersList.Items.Add(ComboBoxSupplier.SelectedItem as DataBase.Supplier);
+            else
+                MessageBox.Show("Необходимо выбрать возможного поставщика из выпадающего списка.");
         }
 
         private void DeletedAt(object sender, RoutedEventArgs e)
