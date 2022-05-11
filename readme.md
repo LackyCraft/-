@@ -1,6 +1,6 @@
 ![Неудачный студент](https://user-images.githubusercontent.com/20025263/111709300-6781ee00-8858-11eb-9cad-cc08dc4ddb9c.png)
 # Меню навигации
-- [Смотреть исходники готового решения](/demo2021_v1_4_5/)
+- [Смотреть исходники готового решения](https://github.com/LackyCraft/demo2021_v1_4_5/tree/master/%D0%A7%D0%B5%D1%80%D0%BD%D0%BE%D0%B2%D0%B8%D0%BA)
  - **Учебные материалы:**
      - **Текстовые пособия:**
        - [Руководство по WPF (mateint)](https://metanit.com/sharp/wpf/)
